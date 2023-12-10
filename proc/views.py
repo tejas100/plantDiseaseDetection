@@ -34,35 +34,58 @@ def index(request):
         mcontdir = '/mcont'+str1+'.png'             #Context --Morph Contrast 
         flatdir = '/flat'+str1+'.png'             #Context --Flat Contrast    
         
-    
-        # ------------------- Gray scale -----------------------
-        originalImage = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection'+f)  #Context
-        grayImage = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)
-        # maskout
-        (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 127, 255, cv2.THRESH_BINARY)
-        cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/grey'+graydir,grayImage)
+        image = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection'+f)  #Context
+
+         #  ---------------- Unsharp mask -----------------
+        kernel = np.array([[0, -1, 0],
+                   [-1, 5,-1],
+                   [0, -1, 0]])
+        image_sharp = cv2.filter2D(src=image, ddepth=-1, kernel=kernel)
+        cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/sharp'+graydir,image_sharp)
 
 
-        # -------------------- Contrast Histogram ---------------------
-        img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/grey'+graydir,0)
-        # create a CLAHE object (Arguments are optional).
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-        cl1 = clahe.apply(img)
-        cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/cont'+contdir,cl1)
 
-        # ------------ Morphological transformation in feature extraction -----------
-        img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/cont'+contdir)
 
-        rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (512, 512))
-        black_hat_image = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, rect_kernel)
-        cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/morph'+morphdir,black_hat_image)
 
-        # -------------------- Morph Contrast Histogram ---------------------
-        img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/morph'+morphdir,0)
-        # create a CLAHE object (Arguments are optional).
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-        cl1 = clahe.apply(img)
-        cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/mcont'+mcontdir,cl1)
+
+
+
+
+
+      #   # ------------------- Gray scale -----------------------
+      #   originalImage = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection'+f)  #Context
+      #   grayImage = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)
+      #   # maskout
+      #   (thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 127, 255, cv2.THRESH_BINARY)
+      #   cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/grey'+graydir,grayImage)
+
+
+
+      #   # -------------------- Contrast Histogram ---------------------
+      #   img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/grey'+graydir,0)
+      #   # create a CLAHE object (Arguments are optional).
+      #   clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+      #   cl1 = clahe.apply(img)
+      #   cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/cont'+contdir,cl1)
+
+      #   # ------------ Morphological transformation in feature extraction -----------
+      #   img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/cont'+contdir)
+
+      #   rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (512, 512))
+      #   black_hat_image = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, rect_kernel)
+      #   cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/morph'+morphdir,black_hat_image)
+
+      #   # -------------------- Morph Contrast Histogram ---------------------
+      #   img = cv2.imread('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/morph'+morphdir,0)
+      #   # create a CLAHE object (Arguments are optional).
+      #   clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+      #   cl1 = clahe.apply(img)
+      #   cv2.imwrite('/Users/tejasbk/Documents/code/plantDiseaseDetection/plantDiseaseDetection/media/mcont'+mcontdir,cl1)
+
+
+
+
+
 
      return render(request, "index.html")
 
